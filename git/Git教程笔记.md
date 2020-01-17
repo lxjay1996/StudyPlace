@@ -61,7 +61,7 @@ Git内部有一个指向当前版本的`HEAD`指针，当你回退版本的时�
 >`git add`命令把提交的所有修改存放到暂存区；
 >![`git add`的工作示意图](images/gitadd.png)
 >然后，`git commit`命令一次性把暂存区的所有修改提交到分支。提交完了之后，暂存区就没有任何内容了。
->![](images/gitcommit.png"`git commit`的工作示意图")
+>![](images/gitcommit.png")
 
 ### 3.管理修改
 >`git diff HEAD -- filename`：可以查看工作区和版本库里最新版本的区别。
