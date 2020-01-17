@@ -59,9 +59,9 @@ Git内部有一个指向当前版本的`HEAD`指针，当你回退版本的时�
 * 工作区（Working Directory）：只你电脑里能够看见的目录，你在那个目录里对文件进行修改等一系列操作。
 * 版本库（Repository）：工作区有一个隐藏目录`.git`，这不算工作区，而是Git的版本库。版本库主要包含了暂存区（Stage）、Git为我们自动创建的第一个分支master、以及指向master的一个指针HEAD。
 >`git add`命令把提交的所有修改存放到暂存区；
->![`git add`的工作示意图](/home/lvxiaojie/WorkPlace/StudyPlace/gitadd.png)
+>![`git add`的工作示意图](images/gitadd.png)
 >然后，`git commit`命令一次性把暂存区的所有修改提交到分支。提交完了之后，暂存区就没有任何内容了。
->![](/home/lvxiaojie/WorkPlace/StudyPlace/gitcommit.png"`git commit`的工作示意图")
+>![](images/gitcommit.png"`git commit`的工作示意图")
 
 ### 3.管理修改
 >`git diff HEAD -- filename`：可以查看工作区和版本库里最新版本的区别。
@@ -94,6 +94,10 @@ Git内部有一个指向当前版本的`HEAD`指针，当你回退版本的时�
 - `git rm filename`+`git commit`：彻底把版本库里的文件也删掉。想要恢复的话，先使用命令`git reset --hard commit-id`版本回退。
 
 ## 三.远程仓库
+在本地Git仓库和Github仓库之间的传输是通过SSh加密传输的：
+>1. 创建SSH Key。在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key：$ ssh-keygen -t rsa -C "youremail@example.com"
+>2. 登陆GitHub，打开“Account settings”，“SSH Keys”页面：然后，点“Add SSH Key”，填上任意Title，在Key文本框里粘贴id_rsa.pub文件的内容.
+
 ### 1.从本地添加远程库
 在github上创建一个远程仓库learngit，并把自己笔记本上一个已有的本地仓库learngit与之关联，然后把本地仓库的内容推送到github仓库。
 ```linux
