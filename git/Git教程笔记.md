@@ -120,3 +120,48 @@ git push -u origin master
 >比如说，创建一个新的远程仓库，名叫gitskills，勾选Initialize this repository with a README，这样 GitHub 会自动为我们创建一个README.md文件。创建完毕后，可以看到README.md文件。
 >下一步是用命令git clone克隆一个本地库：`git clone git@github.com:lxj1996/gitskills.git`
 注意：Git 支持多种协议，包括https，但通过ssh支持的原生git协议速度最快。
+## 四.分支管理
+### 1.创建与合并分支
+- 查看分支：`git branch`
+- 创建分支：`git branch <name>`
+- 切换分支：`git checkout <name>`或者`git switch <name>`
+- 创建+切换分支：`git checkout -b <name>`或者`git switch -c <name>`
+- 合并某分支到当前分支：`git merge <name>`
+- 删除分支：`git branch -d <name>`
+### 2. 解决冲突
+- 当 Git 无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+- 解决冲突就是把 Git 合并失败的文件手动编辑为我们希望的内容，再提交。
+- 用`git log --graph`命令可以看到分支合并图。
+### 3.分支管理策略
+- `master`分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活。
+- 干活都在各自的分支上，也就是说，分支是不稳定的，到某个时候，比如 1.0 版本发布时，再把各自的分支合并到master上，在master分支发布 1.0 版本。
+### 4.Bug分支
+- 修复 bug 时，我们会通过创建新的 bug 分支进行修复，然后合并，最后删除；
+- 当手头工作没有完成时，先把工作现场`git stash`一下(把当前工作现场“储存”起来)，然后去修复`bug`，修复后，再`git stash pop`，回到工作现场；
+- 在 `master` 分支上修复的` bug`，想要合并到当前` dev` 分支，可以用`git cherry-pick <commit>`命令，把` bug` 提交的修改 “复制” 到当前分支，避免重复劳动。
+### 5.Feature分支
+每添加一个新功能，最好新建一个 feature 分支，在上面开发，完成后，合并，最后，删除该 feature 分支。
+- 开发一个新 feature，最好新建一个分支；
+- 如果要丢弃一个没有被合并过的分支，可以通过`git branch -D <name>`强行删除。
+### 6.多人协作
+- 查看远程库信息，使用`git remove -v`；
+- 从本地新建的分支如果不推送到远程，对其他人就是不可见的；
+- 从本地推送分支，使用`git push origin branch-name`，如果推送失败，先用`git pull`抓取远程的新提交；
+- 在本地创建和远程分支对应的分支，使用`git checkout -b branch-name origin/branch-name`，本地和远程分支的名称最好一致；
+- 建立本地分支和远程分支的关联，使用`git branch --set-upstream branch-name origin/branch-name`;
+- 从远程抓取分支，使用`git pull`，如果有冲突，要先处理冲突。
+>注意：多人协作的工作模式
+>1. 首先，可以试图用`git push origin <branch-name>`推送自己的修改；
+>2. 如果推送失败，则因为远程分支比你的本地更新，需要先用`git pull`试图合并；
+>3. 如果合并有冲突，则解决冲突，并在本地提交；
+>4. 没有冲突或者解决掉冲突后，再用`git push origin <branch-name>`推送就能成功！
+>如果`git pull`提示`no tracking information`，则说明本地分支和远程分支的链接关系没有创建，用命令`git branch --set-upstream-to <branch-name> origin/<branch-name>`。
+
+### 7.Rebase
+- `rebase`操作可以把本地未`push`的分叉提交历史整理成直线；
+- `rebase`的目的是使得我们在查看历史提交的变化时更加容易，因为分叉的提交需要三方对比。
+
+## 五.标签(tag)管理
+`tag`就是一个让人容易记住的有意义的名字，它跟某个 `commit`绑在一起。
+### 1.创建标签
+### 2.操作标签
