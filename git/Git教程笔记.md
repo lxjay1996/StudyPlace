@@ -1,6 +1,6 @@
 Git教程
 ======
-## 一、简介与安装、创建版本库
+## 一.简介与安装、创建版本库
 &emsp;Git是一个用C语言写的一个分布式版本控制系统。
 &emsp;版本控制系统对比：
 
@@ -15,8 +15,8 @@ Git教程
 
 ```linux
 	sudo apt-get install git
-	git config-global user.name "Your Name"
-	git config-global user.email "email@example.com"
+	git config --global user.name "Your Name"
+	git config --global user.email "email@example.com"
 ```
 2.创建版本库(repository)：
 
@@ -35,7 +35,7 @@ Git教程
 >使用命令`git add <file>`，注意，可反复多次使用，添加多个文件；
 >使用命令`git commit -m "message"`，完成。
 
-## 二、时光穿梭
+## 二.时光穿梭
 >`git status`：查看当前仓库的状态，处于哪个分支，修改了什么文件，是否提交了修改。
 >`git diff filename`：查看difference，显示的格式正是Unix通用的diff格式。
 
@@ -120,6 +120,7 @@ git push -u origin master
 >比如说，创建一个新的远程仓库，名叫gitskills，勾选Initialize this repository with a README，这样 GitHub 会自动为我们创建一个README.md文件。创建完毕后，可以看到README.md文件。
 >下一步是用命令git clone克隆一个本地库：`git clone git@github.com:lxj1996/gitskills.git`
 注意：Git 支持多种协议，包括https，但通过ssh支持的原生git协议速度最快。
+
 ## 四.分支管理
 ### 1.创建与合并分支
 - 查看分支：`git branch`
@@ -146,7 +147,7 @@ git push -u origin master
 ### 6.多人协作
 - 查看远程库信息，使用`git remove -v`；
 - 从本地新建的分支如果不推送到远程，对其他人就是不可见的；
-- 从本地推送分支，使用`git push origin branch-name`，如果推送失败，先用`git pull`抓取远程的新提交；
+- 从本地推送分支，使用`git push origin branch-name`，如果推送失败，先用`git u是pull`抓取远程的新提交；
 - 在本地创建和远程分支对应的分支，使用`git checkout -b branch-name origin/branch-name`，本地和远程分支的名称最好一致；
 - 建立本地分支和远程分支的关联，使用`git branch --set-upstream branch-name origin/branch-name`;
 - 从远程抓取分支，使用`git pull`，如果有冲突，要先处理冲突。
@@ -164,4 +165,25 @@ git push -u origin master
 ## 五.标签(tag)管理
 `tag`就是一个让人容易记住的有意义的名字，它跟某个 `commit`绑在一起。
 ### 1.创建标签
+- `git tag <tagname>`:用于新建一个标签，默认为`HEAD`，也可以指定一个`commit-id`；
+- `git tag -a <tagname> -m "blabla..."`可以指定标签信息，`-a`指定标签名，`-m`指定说明文字；
+- `git show <tagname>`可以看到说明文字；
+- `git tag`可以查看所有标签。
+>注意：标签总是和某个 `commit` 挂钩。如果这个` commit` 既出现在` master `分支，又出现在` dev `分支，那么在这两个分支上都可以看到这个标签。
+
 ### 2.操作标签
+- `git push origin <tagname>`可以推送一个本地标签；
+- `git push origin --tags`可以推送全部未推送过的本地标签；
+- `git tag -d <tagname>`可以删除一个本地标签；
+- `git oush origin :refs/tags/<tagname>`可以删除一个远程标签。
+
+
+## 六.使用Github
+- 在Github上，可以任意Foke开源仓库；
+- 自己拥有Foke后的仓库的读写权限；
+- 可以推送`pull request`给官方仓库来贡献代码。
+
+## 七.自定义Git
+### 1.忽略特殊文件
+### 2.配置别名
+### 3.搭建Git服务器
