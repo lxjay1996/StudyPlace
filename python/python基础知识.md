@@ -114,6 +114,7 @@ dict 全称 dictionary，在其他语言中也称为 map，使用键 - 值（key
 - `get()`查询key是否存在dict里
 - `pop(key)`删除相应的key-value
 -  dict 内部存放的顺序和 key 放入的顺序是没有关系的
+
 dict|list
 -|-
 查找和插入的速度极快，不会随着 key 的增加而变慢|查找和插入的时间随着元素的增加而增加
