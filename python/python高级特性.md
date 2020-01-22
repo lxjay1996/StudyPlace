@@ -123,7 +123,9 @@ def fib(max):
 <generator object fib at 0x104feaaa0>
 ```
 函数是顺序执行，遇到return语句或者最后一行函数语句就返回。而变成 generator 的函数，在每次调用next()的时候执行，遇到yield语句返回，再次执行时从上次返回的yield语句处继续执行。
+
 把函数改成 generator 后，我们基本上从来不会用next()来获取下一个返回值，而是直接使用for循环来迭代：
+
 ```python
 >>> for n in fib(6):
 ...     print(n)
@@ -148,7 +150,9 @@ True
 False
 ```
 而生成器不但可以作用于for循环，还可以被next()函数不断调用并返回下一个值，直到最后抛出StopIteration错误表示无法继续返回下一个值了。
-**迭代器(iterator):**可以被next()函数调用并不断返回下一个值的对象
+
+**迭代器(iterator):**可以被next()函数调用并不断返回下一个值的对象.
+
 同样地,可以使用**`isinstance()`**判断一个对象是否是**`Iterator`对象:**
 ```python
 >>> from collections import Iterator
@@ -162,6 +166,7 @@ False
 False
 ```
 生成器都是Iterator对象，但list、dict、str虽然是Iterable，却不是Iterator。
+
 把list、dict、str等Iterable变成Iterator可以使用iter()函数：
 ```python
 >>> isinstance(iter([]), Iterator)
@@ -170,6 +175,7 @@ True
 True
 ```
 Python 的Iterator对象表示的是一个数据流，Iterator 对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰性的，只有在需要返回下一个数据时它才会计算。Iterator甚至可以表示一个无限大的数据流，例如全体自然数。而使用 list 是永远不可能存储全体自然数的。
+
 **以上关于迭代器的小结:**
 - 凡是可作用于for循环的对象都是Iterable类型；
 - 凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；
@@ -178,7 +184,7 @@ Python 的Iterator对象表示的是一个数据流，Iterator 对象可以被ne
 ```python
 for x in [1, 2, 3, 4, 5]:
     pass
-    ```
+```
 实际上完全等价于：
 ```python
 it = iter([1, 2, 3, 4, 5])
@@ -190,4 +196,4 @@ while True:
     except StopIteration:
         
         break
-        ```
+```
