@@ -1,6 +1,23 @@
-# 二叉树（Binary Tree）
+# 1. 二叉树（Binary Tree）
 
-## 1.二叉树的定义
+<!-- TOC -->
+
+- [1. 二叉树（Binary Tree）](#1-二叉树binary-tree)
+    - [1.1. 二叉树的定义](#11-二叉树的定义)
+    - [1.2. 二叉树的性质](#12-二叉树的性质)
+    - [1.3. 二叉树的存储结构](#13-二叉树的存储结构)
+    - [1.4. 二叉树的遍历操作](#14-二叉树的遍历操作)
+        - [1.4.1. 前序遍历](#141-前序遍历)
+        - [1.4.2. 中序遍历](#142-中序遍历)
+        - [1.4.3. 后序遍历](#143-后序遍历)
+        - [1.4.4. 层序遍历](#144-层序遍历)
+    - [1.5. 构建二叉树](#15-构建二叉树)
+        - [1.5.1. 通过 前序+中序 构建二叉树](#151-通过-前序中序-构建二叉树)
+        - [1.5.2. 通过 后序+中序 构建二叉树](#152-通过-后序中序-构建二叉树)
+
+<!-- /TOC -->
+
+## 1.1. 二叉树的定义
 
 **二叉树：** 是n(>=0)个结点的有限集合，该集合或为空集（空二叉树），或者由一个根结点和两棵互不相交的、分别称为左子树（left subtree）和右子树（right subtree）的二叉树构成  
 **特点：**
@@ -31,7 +48,7 @@
 >- 叶子结点全在最下两层，且最下层的叶子结点都集中在二叉树的左侧；
 >- 若有度为1的结点，则只可能有一个，且该结点只有左孩子。
 
-## 2.二叉树的性质
+## 1.2. 二叉树的性质
 
 - 二叉树的第k层最多有$2^{k-1}$个结点
 - 一课深度为k的二叉树，最多有$2^k-1$个结点（等比数列求和），最少有k个结点
@@ -45,7 +62,7 @@
 >（2）若2i<=n,则结点i的左孩子为2i;否则，无左孩子  
 >（3）若2i+1<=n,则结点i的右孩子为2i+1；否则，无右孩子  
 
-## 3.二叉树的存储结构
+## 1.3. 二叉树的存储结构
 
 - 顺序存储结构：数组，容易造成空间的浪费，一般仅用于存储完全二叉树
 - 二叉链表（binary linked list）
@@ -120,11 +137,14 @@ void BiTree<DataType>::Release(BiNode<DataType>* bt)
 }
 ```
 
-## 4.二叉树的遍历操作
+## 1.4. 二叉树的遍历操作
 
-**注意：** 中序 + 前序or后序 才可以确定一个唯一的二叉树
+**注意：**
 
-### 4.1 前序遍历
+- 中序 + 前序or后序 才可以确定一个唯一的二叉树，否则没办法确定左右子树的情况
+- 前中后三种遍历都有递归形式（比较简单），但是非递归版本（使用栈和队列）更为重要
+
+### 1.4.1. 前序遍历
 
 **递归实现：**
 
@@ -191,7 +211,7 @@ void BiTree<DataType>::PreOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 ```
 
 
-### 4.2 中序遍历
+### 1.4.2. 中序遍历
 
 **递归版本：**
 
@@ -236,7 +256,7 @@ void BiTree<DataType>::InOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 }
 ```
 
-### 4.3 后序遍历
+### 1.4.3. 后序遍历
 
 后序遍历的难点在于：需要判断上次访问的节点是位于左子树，还是右子树。若是位于左子树，则需跳过根节点，先进入右子树，再回头访问根节点；若是位于右子树，则直接访问根节点  
 **递归版本：**
@@ -308,7 +328,7 @@ void BiTree<DataType>::PostOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 }
 ```
 
-### 4.4 层序遍历
+### 1.4.4. 层序遍历
 
 **思路：**  
 （1）将根指针入队  
@@ -336,9 +356,9 @@ void BiTree<DataType>::LeverOrder(vector<DataType> &vec)
 
 **分析：** 从层序遍历代码可以看出，把整个二叉树从上到下，每一层的结点都从左到右的放入队列中去，然后从队头来遍历每个结点即可  
 
-## 5 构建二叉树
+## 1.5. 构建二叉树
 
-### 5.1 通过 前序+中序 构建二叉树
+### 1.5.1. 通过 前序+中序 构建二叉树
 
 **思路：** 分析遍历的特点：
 
@@ -351,54 +371,96 @@ void BiTree<DataType>::LeverOrder(vector<DataType> &vec)
 template<class DataType>
 BiNode<DataType>* BuildTree(vector<DataType> preorder, vector<DataType> inoreder)
 {//使用hashmap存储中序遍历，目的是查找方便。因为从前序遍历找到根结点后，还要寻找根结点在中序遍历中的位置
-    hash_map<int, DataType> hmap;
+    unordered_map<int, DataType> inmap;
     for(int i=0; i<inoreder.size(); i++)
     {
-        hmap.insert(inorder[i], i);
+        inmap.insert(pair<DataType, int>{inorder[i], i});
     }
-    return Build(preorder, hmap, 0, preorder.size()-1, 0);
+    return Build(preorder, inmap, 0, preorder.size()-1, 0);
 }
 
 //传入五个参数：前序序列，中序序列，前序序列的开始，前序序列的结束，中序序列的开始
 template<class DataType>
-BiNode<DataType>* Build(vector<DataType> preorder, hash_map<int,DataType> hmap, int preStart, int preEnd, int inStart)
+BiNode<DataType>* Build(vector<DataType> preorder, unordered_map<DataType,int> inmap, int preStart, int preEnd, int inStart)
 {
     if(preEnd < preStrat) return null;//递归边界
     BiNode<DataType>* root = new BiNode(preorder[preStart]);//从先序序列首位生成根结点
-    int rootIndex = hmap.at(root->data);//在中序序列中找到根结点对应的索引
+    int rootIndex = inmap.at(root->data);//在中序序列中找到根结点对应的索引
     int len = rootIndex - inStart;//左子树的结点个数
-    root->lchild = build(preorder, hmap, preStart+1, preStart+len, inStart);//左子树递归调用
-    root->rchild = build(preorder, hmap, preStart+len+1, preEnd, rootIndex+1);//右子树递归调用
+    root->lchild = build(preorder, inmap, preStart+1, preStart+len, inStart);//左子树递归调用
+    root->rchild = build(preorder, inmap, preStart+len+1, preEnd, rootIndex+1);//右子树递归调用
+    return root;
 }
 ```
 
-### 5.2 通过 后序+中序 构建二叉树
+### 1.5.2. 通过 后序+中序 构建二叉树
 
 **思路：**  
 （1）找到根结点（后序序列的最后一位）  
-（2）在中序序列中，找到根结点的位置，划分左右子树，进行递归构建  
+（2）在中序序列中，找到根结点的位置(既可以使用hash表来查找，也可以使用向量遍历得方式来寻找)，划分左右子树，进行递归构建  
 
 ```cpp
 template<class DataType>
 BiNode<DataType>* BuildTree(vector<DataType> postorder, vector<DataType> inoreder)
-{//使用hashmap存储中序遍历，目的是查找方便。因为从前序遍历找到根结点后，还要寻找根结点在中序遍历中的位置
-    hash_map<int, DataType> hmap;
+{//使用hashmap存储中序遍历，目的是查找方便。因为从前序遍历找到根结点后，还要寻找根结点在中序遍历中的位置，也可以通过循环向量遍历来查找
+    hash_map<int, DataType> inmap;
     for(int i=0; i<inoreder.size(); i++)
     {
-        hmap.insert(inorder[i], i);
+        inmap.insert(pair<DataType, int>{inorder[i], i});
     }
-    return Build(postorder, hmap, 0, postorder.size()-1, 0);
+    return Build(postorder, inmap, 0, postorder.size()-1, 0);
 }
 
 //传入五个参数：前序序列，中序序列，前序序列的开始，前序序列的结束，中序序列的开始
 template<class DataType>
-BiNode<DataType>* Build(vector<DataType> postorder, hash_map<int,DataType> hmap, int postStart, int postEnd, int inStart)
+BiNode<DataType>* Build(vector<DataType> postorder,unordered_map<DataType,int> inmap, int postStart, int postEnd, int inStart)
 {
     if(postEnd < postStrat) return null;//递归边界
     BiNode<DataType>* root = new BiNode(postorder[posEnd]);//从后序序列最后位生成根结点
-    int rootIndex = hmap.at(root->data);//在中序序列中找到根结点对应的索引
+    int rootIndex = inmap.at(root->data);//在中序序列中找到根结点对应的索引
     int len = rootIndex - inStart;//左子树的结点个数
-    root->lchild = build(postorder, hmap, postStart, postStart+len-1, inStart);//左子树递归调用
-    root->rchild = build(postorder, hmap, postStart+len+1, postEnd-1, rootIndex+1);//右子树递归调用
+    root->lchild = build(postorder, inmap, postStart, postStart+len-1, inStart);//左子树递归调用
+    root->rchild = build(postorder, inmap, postStart+len+1, postEnd-1, rootIndex+1);//右子树递归调用
+    return root;
+}
+```
+
+**另一个版本：** 清晰明了，没用使用hash表查找根结点，而是遍历查找
+
+```cpp
+template<class DataType>
+BiNode<DataType>* BuildTree(vector<DataType> post, vector<DataType> vin)
+{
+    if(!vin.empty()) return null;//递归边界
+    vector<DataType> postleft, postright, vinleft, vinright;
+    BiNode<DataType>* root = new BiNode<DataType>(post[post.size()-1])//生成根结点
+    int rootindex = 0;//查找根结点在中序序列中的位置
+    for(int i=0; i<vin.size(); i++)
+    {
+        if(root->data == vin[i])
+        {
+            rootindex = i;
+            break;
+        }
+    }
+
+    //找到root所指结点的左子树对应的后序和中序
+    for(int i=0; i<rootindex; i++)
+    {
+        postleft.push_back(post[i]);
+        vinleft.push_back(vin[i]);
+    }
+    //找到root所指结点的右子树对应的后序和中序
+    for(int i=rootindex+1; i<vin.size(); i++)
+    {
+        postright.push_back(post[i-1]);
+        vinright.push_back(vin[i]);
+    }
+    //递归构建左右子树
+    root->left = BuildTree(postleft, vinleft);
+    root->right = BuildTree(postright, vinright);
+
+    return root;
+
 }
 ```
