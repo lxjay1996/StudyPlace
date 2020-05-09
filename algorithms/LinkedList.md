@@ -224,6 +224,23 @@ void LinkList<DataType>::PrintList()
 }
 ```
 
+**析构函数：**
+
+-思路：由于结点是用运算符new申请的，在释放单链表类的对象时无法自动释放这些结点的存储空间，所以析构函数应将单链表中结点（包括头结点）的存储空间释放。
+
+```cpp
+template<class DataType>
+LinkList<DataType>::~LinkList()
+{
+    while(head != nullptr)//释放整个链表的每个结点
+    {
+        Node<DataType>* tmp = head;//暂存被释放结点
+        head = head->next;//head指向被释放结点的另一个结点
+        delete tmp;//删除结点
+    }
+}
+```
+
 ## 3. 链表翻转
 
 ### 3.1 递归翻转
@@ -386,7 +403,7 @@ Node<DataType>* FindKthNode(Node<DataType>* head)
     //临界条件：k大于链表长度
     if(fast == null)
     {
-        throw "异常"；
+        throw "异常";
     }
     //slow和fast同时后移，直到fast移到尾结点
     while(fast->next != null)
