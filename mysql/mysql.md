@@ -3,18 +3,19 @@
 <!-- TOC -->
 
 - [mysql](#mysql)
-  - [1 创建数据库并插入数据](#1-%e5%88%9b%e5%bb%ba%e6%95%b0%e6%8d%ae%e5%ba%93%e5%b9%b6%e6%8f%92%e5%85%a5%e6%95%b0%e6%8d%ae)
-    - [1.1 创建数据库](#11-%e5%88%9b%e5%bb%ba%e6%95%b0%e6%8d%ae%e5%ba%93)
-    - [1.2 数据类型](#12-%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b)
-    - [1.3 插入数据](#13-%e6%8f%92%e5%85%a5%e6%95%b0%e6%8d%ae)
-  - [2 mysql的约束](#2-mysql%e7%9a%84%e7%ba%a6%e6%9d%9f)
-  - [3 SELECT语句详解](#3-select%e8%af%ad%e5%8f%a5%e8%af%a6%e8%a7%a3)
+  - [1 创建数据库并插入数据](#1-创建数据库并插入数据)
+    - [1.1 创建数据库](#11-创建数据库)
+    - [1.2 数据类型](#12-数据类型)
+    - [1.3 插入数据](#13-插入数据)
+  - [2 mysql的约束](#2-mysql的约束)
+  - [3 SELECT语句详解](#3-select语句详解)
+  - [4 数据库、数据表操作](#4-数据库数据表操作)
 
 <!-- /TOC -->
 
 ## 1 创建数据库并插入数据
 
-```mysql
+```sql
 # 打开 MySQL 服务
 sudo service mysql start
 
@@ -162,4 +163,78 @@ ORDER BY id;
 SELECT id, name, people_num FROM employee JOIN department
 ON employee.in_dpt = department.dpt_name
 ORDER BY id;
+```
+
+## 4 数据库、数据表操作
+
+**重命名表：**  
+
+  ```sql
+  RENAME TABLE 原名 TO 新名字;
+  ALTER TABLE 原名 TO 新名;
+  ALTER TABLE 原名 TO 姓名;
+  ```
+
+**删除表：**  
+
+```sql
+DROP TABLE 表名字;
+```
+
+**增加一列：**  
+
+```sql
+ALTER TABLE 表名字 ADD COLUMN 列名字 数据类型 约束;
+ALTER TABLE 表名字 ADD 列名字 数据类型 约束;
+//新增的列被默认放在表的最右边
+//可以使用AFTER关键词来指定插入位置，比如：新增一列 weight(体重) 放置在 age(年龄) 的后面
+ALTER TABLE employee ADD weight INT(4) DEFAULT 60 AFTER age;
+//使用FIRST关键词来把新增的列放在第一列
+ALTER TABLE employee ADD weight INT(4) DEFAULT 70 FIRST;
+```
+
+**删除一列：**  
+
+```sql
+ALTER TABLE 表名字 DROP COLUMN 列名字;
+ALTER TABLE 表名字 DROP 列名字;
+```
+
+**重命名一列：**  重命名就是对一个列做修改(CHANGE)
+
+```sql
+//“数据类型” 不能省略，否则重命名失败
+//当原列名和新列名相同的时候，指定新的数据类型或约束，就可以用于修改数据类型或约束。
+//需要注意的是，修改数据类型可能会导致数据丢失，所以也需要慎重使用。
+ALTER TABLE 表名字 CHANGE 原列名 新列名 数据类型 约束;
+```
+
+**改变数据类型：**  要修改一列的数据类型，除了使用刚才的 CHANGE 语句外，还可以用这样的 MODIFY 语句
+
+- 修改数据类型必须小心，因为这可能会导致你的数据丢失。
+
+```sql
+ALTER TABLE 表名字 MODIFY 列名字 新数据类型;
+```
+
+**修改表中某个值：**  
+
+- 必须要有WHERE条件
+
+```sql
+UPDATE 表名字 SET 列1=值1, 列2=值2 WHERE 条件;
+
+//比如把 xiaowei 的age改为25，salary 改为 20000，就可以这样写
+UPDATE employee SET age=25 ,salary=20000 WHERE name='xiaowei';
+```
+
+**删除一行记录：**  
+
+- 和修改某个值一样也必须要有WHERE条件，否则整列的数据都会被删除
+
+```sql
+DELETE FROM 表名字 WHERE 条件;
+
+//比如：把 xiaohong 那行的数据删除
+DELETE FROM employee WHERE name="xiaohong";
 ```
