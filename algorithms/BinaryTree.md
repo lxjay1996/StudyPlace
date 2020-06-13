@@ -3,17 +3,17 @@
 <!-- TOC -->
 
 - [1. 二叉树（Binary Tree）](#1-二叉树binary-tree)
-    - [1.1. 二叉树的定义](#11-二叉树的定义)
-    - [1.2. 二叉树的性质](#12-二叉树的性质)
-    - [1.3. 二叉树的存储结构](#13-二叉树的存储结构)
-    - [1.4. 二叉树的遍历操作](#14-二叉树的遍历操作)
-        - [1.4.1. 前序遍历](#141-前序遍历)
-        - [1.4.2. 中序遍历](#142-中序遍历)
-        - [1.4.3. 后序遍历](#143-后序遍历)
-        - [1.4.4. 层序遍历](#144-层序遍历)
-    - [1.5. 构建二叉树](#15-构建二叉树)
-        - [1.5.1. 通过 前序+中序 构建二叉树](#151-通过-前序中序-构建二叉树)
-        - [1.5.2. 通过 后序+中序 构建二叉树](#152-通过-后序中序-构建二叉树)
+  - [1.1. 二叉树的定义](#11-二叉树的定义)
+  - [1.2. 二叉树的性质](#12-二叉树的性质)
+  - [1.3. 二叉树的存储结构](#13-二叉树的存储结构)
+  - [1.4. 二叉树的遍历操作](#14-二叉树的遍历操作)
+    - [1.4.1. 前序遍历](#141-前序遍历)
+    - [1.4.2. 中序遍历](#142-中序遍历)
+    - [1.4.3. 后序遍历](#143-后序遍历)
+    - [1.4.4. 层序遍历](#144-层序遍历)
+  - [1.5. 构建二叉树](#15-构建二叉树)
+    - [1.5.1. 通过 前序+中序 构建二叉树](#151-通过-前序中序-构建二叉树)
+    - [1.5.2. 通过 后序+中序 构建二叉树](#152-通过-后序中序-构建二叉树)
 
 <!-- /TOC -->
 
@@ -176,7 +176,8 @@ void BiTree<DataType>::PreOrder(BiNode<DataType>* bt， vector<DataType> &vec)
     st.push(bt);//根结点入栈
     while(!st.empty())//栈为空才结束
     {
-        BiNode<DataType>* tmp = st.pop();
+        BiNode<DataType>* tmp = st.top();
+        st.pop();
         vec.push_back(tmp->data);
         if(tmp->rchild != null) st.push(tmp->rchild);//右子树入栈
         if(tmp->lchild != null) st.push(tmp->lchild);//左子树入栈
@@ -203,13 +204,13 @@ void BiTree<DataType>::PreOrder(BiNode<DataType>* bt， vector<DataType> &vec)
         }
         if(!st.empty())//栈没空，说明还没遍历完二叉树
         {
-            bt = st.pop();//出栈
+            bt = st.top();
+            st.pop();   //出栈
             bt = bt->rchild;//利用循环,遍历bt的右子树
         }
     }
 }
 ```
-
 
 ### 1.4.2. 中序遍历
 
@@ -248,7 +249,8 @@ void BiTree<DataType>::InOrder(BiNode<DataType>* bt， vector<DataType> &vec)
         }
         if(!st.empty())//栈没空，说明还没遍历完二叉树
         {
-            bt = st.pop();//出栈
+            bt = st.top();
+            st.pop();   //出栈
             vec.push_back(bt->data);//输出根结点
             bt = bt->rchild;//利用循环,遍历bt的右子树
         }
@@ -288,7 +290,8 @@ void BiTree<DataType>::PostOrder(BiNode<DataType>* bt， vector<DataType> &vec)
     st.push(bt);
     while(!st.empty())
     {
-        BiNode<DataType>* tmp = st.pop();
+        BiNode<DataType>* tmp = st.top();
+        st.pop();
         vec.insert(vec.begin(), tmp->data);//在vec头部插入结点
         if(tmp->lchild != null) st.push(tmp->lchild);//先左子树
         if(tmp->rchild != null) st.push(tmp->rchild);//再右子树
@@ -303,26 +306,27 @@ template<class DataType>
 void BiTree<DataType>::PostOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 {
     stack<BiNode<DataType>*> st;//栈初始化
-    BiNode<DataType>* pre = null;//记录当前根结点的右结点是否已经保存过
-    while(bt != null && !st.empty())//bt和栈同时为空才停止遍历
+    BiNode<DataType>* pre = nullptr;//记录当前根结点的右结点是否已经保存过
+    while(bt != null || !st.empty())//bt和栈同时为空才停止遍历
     {
-        while(bt!=null)//指针没到底，就继续入栈
+        while(bt!=nullptr)//指针没到底，就继续入栈
         {
             st.push(bt);
             bt = bt->lchild;
         }
         bt = st.top();
-        if(bt->rchild==null || pre==bt->rchlid)
+        //输出一个结点前，要先判断它的右孩子是否已经输出
+        if(bt->rchild==nullptr || pre==bt->rchlid)  //右子树不存在或者右子树已经输出过，输出根结点
         {
             vec.push_back(bt->data);
             st.pop();
-            pre = bt;
-            bt = null;
+            pre = bt;   //pre指向刚刚输出的最新结点
+            bt = nullptr;   //bt要置空，防止重复入栈
         }
-        else
+        else    //该结点存在右孩子，且右孩子没有输出过
         {
-            bt = bt->rchild;
-            pre = null;
+            bt = bt->rchild;    //让右孩子入栈，进行迭代输出
+            //pre = nullptr;
         }
     }
 }
