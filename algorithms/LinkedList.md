@@ -3,15 +3,15 @@
 <!-- TOC -->
 
 - [链表（linked list）](#链表linked-list)
-    - [1. 链表的定义和特点](#1-链表的定义和特点)
-    - [2. 链表的实现](#2-链表的实现)
-    - [3. 链表翻转](#3-链表翻转)
-        - [3.1 递归翻转](#31-递归翻转)
-        - [3.2 迭代翻转](#32-迭代翻转)
-    - [4.链表之快慢指针](#4链表之快慢指针)
-        - [4.1 寻找/删除第k个结点](#41-寻找删除第k个结点)
-        - [4.2 判断两个链表是否相交及找到第一个交点，空间复杂度$O(1)$](#42-判断两个链表是否相交及找到第一个交点空间复杂度o1)
-        - [4.3 判断链表是否环，如果有，找到环的入口位置，要求空间复杂度为$O(1)$](#43-判断链表是否环如果有找到环的入口位置要求空间复杂度为o1)
+  - [1. 链表的定义和特点](#1-链表的定义和特点)
+  - [2. 链表的实现](#2-链表的实现)
+  - [3. 链表翻转](#3-链表翻转)
+    - [3.1 递归翻转](#31-递归翻转)
+    - [3.2 迭代翻转](#32-迭代翻转)
+  - [4.链表之快慢指针](#4链表之快慢指针)
+    - [4.1 寻找/删除第k个结点](#41-寻找删除第k个结点)
+    - [4.2 判断两个链表是否相交及找到第一个交点，空间复杂度$O(1)$](#42-判断两个链表是否相交及找到第一个交点空间复杂度math-xmlnshttpwwww3org1998mathmathmlsemanticsmrowmiomimo-stretchyfalsemomn1mnmo-stretchyfalsemomrowannotation-encodingapplicationx-texo1annotationsemanticsmatho1)
+    - [4.3 判断链表是否环，如果有，找到环的入口位置，要求空间复杂度为$O(1)$](#43-判断链表是否环如果有找到环的入口位置要求空间复杂度为math-xmlnshttpwwww3org1998mathmathmlsemanticsmrowmiomimo-stretchyfalsemomn1mnmo-stretchyfalsemomrowannotation-encodingapplicationx-texo1annotationsemanticsmatho1)
 
 <!-- /TOC -->
 
