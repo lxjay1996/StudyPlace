@@ -130,6 +130,10 @@
     int *p4 = new (&data) int(50);
     ```
 
+- new 和 delete可以混用吗？为什么要区分单个元素和数组的内存分配和释放呢？
+  - 对于普通的内置类型，没有构造函数，new最后只是调用melloc进行单纯的内存分配，不涉及对象的构造和析构，所以此时`new/delete[]`、`new[]/delete`可以混用,但是最好不要
+  - 对于自定义的类类型，有析构函数，为了正确调用析构函数，那么开辟对象数组的时候，会多开辟4个字节，记录对象的个数
+
 ## $ OOP面向对象
 
 ### $$ OOP编程  this指针
@@ -172,6 +176,7 @@
 ### $$ 手动实现一个自己的 string 类
 
 - **对象的拷贝尽量不用memcpy和realloc** , 会造成浅拷贝，因为两个函数只是做内存的直接拷贝，不会把对象所占用的外部资源也拷贝，所以当对象成员变量中有指针的时候，会造成多个对象指向同一个外部资源，形成野指针。
+- 迭代器的功能：提供一种统一的方式，来透明的遍历容器
 
 ```cpp
 class MyString {
@@ -207,10 +212,68 @@ public:
     strcpy(m_data, other.m_data);
     return *this;
   }
+  // >/>=/<=/</== 关系运算符重载函数
+  bool operator>(const MyString& rhs)const {
+    return strcmp(m_data, rhs.m_data)>0;
+  }
+  bool operator>=(const MyString& rhs)const {
+    return !(strcmp(m_data, rhs.m_data)<0);
+  }
+  bool operator<=(const MyString& rhs)const {
+    return !(strcmp(m_data, rhs.m_data)>0);
+  }
+  bool operator<(const MyString& rhs)const {
+    return (strcmp(m_data, rhs.m_data)<0);
+  }
+  bool operator==(const MyString& rhs)const {
+    return (strcmp(m_data, rhs.m_data)==0);
+  }
+  // size()函数，返回大小，不包括'\0'
+  int size()const { return strlen(m_data); }
+  // []操作符重载，支持随机访问
+  char& operator[](int index) { return m_data[index]; }
+  const char& operator[](int index)const { return m_data[index]; }
+  // 返回C风格字符串，返回的是一个指针，指向一个由空字符结尾的字符数组
+  // 指针的类型是const char*，确保不会改变字符数组的内容
+  const char* c_str()const { return m_data; }
+
+  // 给字符串类型提供迭代器的实现,指向的是容器底部元素的位置
+  class iterator {
+  public:
+    iterator(char* p = nullptr) : _p(p) {}
+    // 运算符重载: !=  前置++  提领*
+    // 一般来说迭代器实现前置++就行了，不会产生临时量，直接返回
+    bool operator!=(const iterator& it) {return _p != it._p;}
+    void operator++() {++_p;}
+    char& operator*() {return *_p;}
+  private:
+    char* _p;
+  }
+  // begin返回容器底层首元素的迭代器,end返回容器最末元素后继位置的迭代器
+  // 注意begin和end都是MyString的方法，而不是迭代器的方法
+  iterator begin() {return iterator(m_data);}
+  iterator end() {return iterator(m_data + size());}
 
 private:
   char *m_data; //用于保存字符串
+  friend ostream& operator<<(ostream& out, const MyString& rhs);
+  friend MyString operator+(const MyString& lhs, const MyString& rhs);
 };
+
+// +运算符重载函数  要写在全局作用域
+MyString operator+(const MyString& lhs, const MyString& rhs) {
+  // 需要开辟足够的内存空间来存放拼接后的字符串
+  MyString tmp; // 出了作用域，tmp会自动被析构，释放内存
+  tmp.m_data = new char[strlen(lhs.m_data) + strlen(rhs.m_data) +1];
+  strcpy(tmp.m_data, lhs.m_data);
+  strcat(tmp.m_data, rhs.m_data);
+  return tmp;
+}
+// <<输出流运算符重载
+ostream& operator<<(ostream& out, const MyString& rhs) {
+  out << rhs.m_data;
+  return out;
+}
 
 int main() {
   // 调用普通构造函数
@@ -453,6 +516,27 @@ public:
   bool full() const { return _last == _end; }
   bool empty() const { return _last == _first; }
   int size() const { return _last - _first; }
+
+  // 运算符重载
+  T& operator[](int index) {
+    if(index<0 || index>=size()) throw "OutOfRangeException";
+    return _first[index];
+    }
+
+  // 迭代器一般实现成容器的嵌套类型
+  class iterator {
+  public:
+    iterator(const T* p) : _p(p) {}
+    // 运算符重载
+    bool operator!=(const iterator& rhs)const {return _p != rhs._p;}
+    void operator++() {return ++_p;}
+    T& operator*() {return *_p;}
+    const T& operator*()const {return *_p;}
+  private:
+    T* _p;
+  }
+  iterator begin() {return iterator(_first);}
+  iterator end() {return iterator(_last);}
 private:
   T *_first;  // 指向数组的起始位置
   T *_last;   // 指向数组中有效元素的后继位置
@@ -479,3 +563,27 @@ private:
 - 本质上是对象对成员方法的调用，运算符左边是调用操作符的对象，右边是运算符重载函数的参数
 - 编译器做对象运算的时候，会调用对象的运算符重载函数（优先调用成员方法）；如果没有成员方法，就在全局作用域找合适的运算符重载函数。
 - ++、--：是单目运算符，`operator++()`前置++， `operator++(int)`带有整型参数的是后置++
+
+### $$ 容器的迭代器
+
+- 迭代器的功能：提供一种统一的方式，来透明的遍历容器.一般都要实现`运算符重载: !=  前置++  提领*`
+- iterator -> 遍历所有容器 -> 方式都是一样的
+
+  ```cpp
+  auto it = container.begin();
+  for(; it != container.end(); ++it) cout << *it << endl;
+  ```
+
+- 泛型算法 -> 给所有容器都可以使用的， 参数接收的都是容器的迭代器
+
+### $$ 迭代器的失效问题
+
+- C++primer 9.3.6
+- 迭代器为什么会失效
+  - 当容器调用`erase` 方法后，当前位置到容器末尾位置的所有迭代器全部失效
+  - 当容器调用`insert`方法后，当前位置到容器末尾位置的所有迭代器全部失效
+  >迭代器依然有效:[首元素， 插入点/删除点]
+  >迭代器全部失效:[插入点/删除点， 末尾元素]
+  - 对于`insert`来说， 如果引起了容器扩容，那么原容器的所有迭代器全部失效
+- 问题怎么解决
+  - 对插入/删除点的迭代器进行更新操作
