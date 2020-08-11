@@ -194,9 +194,9 @@ template<class DataType>
 void BiTree<DataType>::PreOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 {
     stack<BiNode<DataType>*> st;//栈初始化
-    while(bt!=null || !st.empty())//bt和栈同时为空才停止遍历
+    while(bt || !st.empty())//bt和栈同时为空才停止遍历
     {
-        while(bt != null)//指针没到底，就继续入栈
+        while(bt)//指针没到底，就继续入栈
         {
             vec.push_back(bt->data);//输出根结点
             st.push(bt);//根结点指针入栈
@@ -237,12 +237,11 @@ void BiTree<DataType>::InOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 
 ```cpp
 template<class DataType>
-void BiTree<DataType>::InOrder(BiNode<DataType>* bt， vector<DataType> &vec)
-{
+void BiTree<DataType>::InOrder(BiNode<DataType>* bt， vector<DataType> &vec) {
     stack<BiNode<DataType>*> st;//栈初始化
-    while(bt!=null || !st.empty())//bt和栈同时为空才停止遍历
+    while(bt || !st.empty())//bt和栈同时为空才停止遍历
     {
-        while(bt != null)//指针没到底，就继续入栈
+        while(bt)//指针没到底，就继续入栈
         {
             st.push(bt);//根结点指针入栈
             bt = bt->lchild;//利用循环，遍历bt的左子树
@@ -307,16 +306,16 @@ void BiTree<DataType>::PostOrder(BiNode<DataType>* bt， vector<DataType> &vec)
 {
     stack<BiNode<DataType>*> st;//栈初始化
     BiNode<DataType>* pre = nullptr;//记录当前根结点的右结点是否已经保存过
-    while(bt != null || !st.empty())//bt和栈同时为空才停止遍历
+    while(bt || !st.empty())//bt和栈同时为空才停止遍历
     {
-        while(bt!=nullptr)//指针没到底，就继续入栈
+        while(bt)//指针没到底，就继续入栈
         {
             st.push(bt);
             bt = bt->lchild;
         }
         bt = st.top();
-        //输出一个结点前，要先判断它的右孩子是否已经输出
-        if(bt->rchild==nullptr || pre==bt->rchlid)  //右子树不存在或者右子树已经输出过，输出根结点
+        // 输出一个结点前，要先判断它的右孩子是否已经输出
+        if(!bt->rchild || pre==bt->rchlid)  //右子树不存在或者右子树已经输出过，输出根结点
         {
             vec.push_back(bt->data);
             st.pop();
